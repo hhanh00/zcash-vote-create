@@ -31,10 +31,6 @@ jobs:
           echo "Certificate imported."
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v3
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare Tauri
         run: |
           npm install
