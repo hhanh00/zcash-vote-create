@@ -75,8 +75,9 @@ async fn create_election(
             question: election.question,
             candidates,
             signature_required: election.signature_required,
-            cmx: [0u8; 32],
-            nf: [0u8; 32],
+            cmx: Default::default(),
+            nf: Default::default(),
+            cmx_frontier: Default::default(),
         };
 
         let connection = pool.get()?;
@@ -94,12 +95,13 @@ async fn create_election(
         let nf_root = compute_nf_root(&connection)?;
         channel.send(75)?;
         println!("nf_root");
-        let cmx_root = compute_cmx_root(&connection)?;
+        let (cmx_root, frontier) = compute_cmx_root(&connection)?;
         channel.send(100)?;
         println!("cmx_root");
 
-        e.nf.copy_from_slice(&nf_root);
-        e.cmx.copy_from_slice(&cmx_root);
+        e.nf = nf_root;
+        e.cmx = cmx_root;
+        e.cmx_frontier = frontier;
 
         let e = ElectionData {
             seed: phrase,
