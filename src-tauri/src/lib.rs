@@ -48,7 +48,7 @@ async fn create_election(
             .split("\n")
             .enumerate()
             .map(|(i, choice)| {
-                let spk = SpendingKey::from_zip32_seed(&seed, 159, i as u32).unwrap();
+                let spk = SpendingKey::from_zip32_seed(&seed, 133, i as u32).unwrap();
                 let fvk = FullViewingKey::from(&spk);
                 let address = fvk.address_at(0u64, Scope::External);
                 let vote_address = VoteAddress(address);
@@ -85,7 +85,7 @@ async fn create_election(
 
         let lwd_url = std::env::var("LWD_URL").unwrap_or("https://zec.rocks".to_string());
         let ch = channel.clone();
-        let (connection, _) = download_reference_data(connection, &e, None, &lwd_url, move |h| {
+        let (connection, _) = download_reference_data(connection, 0, &e, None, &lwd_url, move |h| {
             let p = (100 * (h - start)) / (end - start) / 2;
             let _ = ch.send(p);
         })
