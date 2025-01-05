@@ -965,27 +965,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "create-election"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bip0039",
- "hex",
- "orchard",
- "r2d2",
- "r2d2_sqlite",
- "rusqlite",
- "serde",
- "serde_json",
- "slug",
- "tauri",
- "tauri-build",
- "tauri-plugin-dialog",
- "tauri-plugin-opener",
- "zcash-vote",
-]
-
-[[package]]
 name = "crossbeam-channel"
 version = "0.5.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6711,6 +6690,27 @@ dependencies = [
  "zcash_address 0.2.1",
  "zcash_note_encryption 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "zcash_primitives",
+]
+
+[[package]]
+name = "zcash-vote-create"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bip0039",
+ "hex",
+ "orchard",
+ "r2d2",
+ "r2d2_sqlite",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "slug",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-dialog",
+ "tauri-plugin-opener",
+ "zcash-vote",
 ]
 
 [[package]]

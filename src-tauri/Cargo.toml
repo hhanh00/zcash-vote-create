@@ -1,5 +1,5 @@
 [package]
-name = "create-election"
+name = "zcash-vote-create"
 version = "0.1.0"
 description = "Create a Zcash election"
 authors = ["hanh00"]
