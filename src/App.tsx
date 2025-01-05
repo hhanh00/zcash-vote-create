@@ -5,6 +5,7 @@ import { Channel, invoke } from "@tauri-apps/api/core";
 import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { save } from "@tauri-apps/plugin-dialog";
+import Swal from "sweetalert2";
 
 type ElectionTemplate = {
   name: string;
@@ -28,8 +29,8 @@ function App() {
   const { register, control, handleSubmit, formState: { errors } } = useForm<ElectionTemplate>({
     defaultValues: {
       name: "",
-      start: 2100000,
-      end: 2100100,
+      start: 0,
+      end: 0,
       question: "",
       choices: "",
       signature_required: false,
@@ -42,13 +43,22 @@ function App() {
         setProgress(p);
       }
 
-      const election: string = await invoke("create_election", { election: data, channel: channel, })
-      const electionData: ElectionData = JSON.parse(election)
-      const seed = electionData.seed
+      try {
+        const election: string = await invoke("create_election", { election: data, channel: channel, })
+        const electionData: ElectionData = JSON.parse(election)
+        const seed = electionData.seed
+        setSeed(seed)
+        setElection(electionData.election)
+        setShowSeed(true)
+      }
+      catch (e: any) {
+        await Swal.fire(
+          {
+              icon: "error",
+              title: e
+          })
+      }
 
-      setSeed(seed)
-      setElection(electionData.election)
-      setShowSeed(true)
     })()
   }
 

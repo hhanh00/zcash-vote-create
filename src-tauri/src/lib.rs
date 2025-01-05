@@ -94,10 +94,10 @@ async fn create_election(
 
         let nf_root = compute_nf_root(&connection)?;
         channel.send(75)?;
-        println!("nf_root");
+        println!("nf_root {}", hex::encode(&nf_root.0));
         let (cmx_root, frontier) = compute_cmx_root(&connection)?;
         channel.send(100)?;
-        println!("cmx_root");
+        println!("cmx_root {}", hex::encode(&cmx_root.0));
 
         e.nf = nf_root;
         e.cmx = cmx_root;
