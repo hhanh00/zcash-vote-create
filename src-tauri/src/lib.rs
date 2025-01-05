@@ -12,8 +12,8 @@ use zcash_vote::{
     address::VoteAddress,
     db::create_schema,
     download::download_reference_data,
+    election::{CandidateChoice, Election},
     trees::{compute_cmx_root, compute_nf_root},
-    CandidateChoice, Election,
 };
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
@@ -85,11 +85,12 @@ async fn create_election(
 
         let lwd_url = std::env::var("LWD_URL").unwrap_or("https://zec.rocks".to_string());
         let ch = channel.clone();
-        let (connection, _) = download_reference_data(connection, 0, &e, None, &lwd_url, move |h| {
-            let p = (100 * (h - start)) / (end - start) / 2;
-            let _ = ch.send(p);
-        })
-        .await?;
+        let (connection, _) =
+            download_reference_data(connection, 0, &e, None, &lwd_url, move |h| {
+                let p = (100 * (h - start)) / (end - start) / 2;
+                let _ = ch.send(p);
+            })
+            .await?;
         println!("downloaded");
 
         let nf_root = compute_nf_root(&connection)?;
