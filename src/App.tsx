@@ -11,22 +11,34 @@ import { Progress } from "./components/ui/progress";
 import { Textarea } from "./components/ui/textarea";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "./components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  FormDescription,
+} from "./components/ui/form";
 import { Switch } from "./components/ui/switch";
 import { Dialog, DialogContent } from "./components/ui/dialog";
+import Joyride from 'react-joyride';
 
-const NU5 = 1687104
+const NU5 = 1687104;
 
-const electionSchema = z.object({
-  name: z.string().min(3).max(120),
-  start: z.number().int().min(NU5),
-  end: z.number().int().min(NU5),
-  question: z.string().min(1),
-  choices: z.string().min(1),
-  signature_required: z.boolean(),
-})
-.refine((d) => d.end >= d.start,
-  { message: "End must be higher than Start", path: ["end"] });
+const electionSchema = z
+  .object({
+    name: z.string().min(3).max(120),
+    start: z.number().int().min(NU5),
+    end: z.number().int().min(NU5),
+    question: z.string().min(1),
+    choices: z.string().min(1),
+    signature_required: z.boolean(),
+  })
+  .refine((d) => d.end >= d.start, {
+    message: "End must be higher than Start",
+    path: ["end"],
+  });
 
 type ElectionData = {
   seed: string;
@@ -52,6 +64,33 @@ function App() {
   });
 
   const { control, handleSubmit } = form;
+
+  const steps = [
+    {
+      target: ".name",
+      content: "This is the name of the election. It should clearly identify it and must be unique.",
+    },
+    {
+      target: ".start",
+      content: "The beginning of the coin registration range.\nTo qualify for the election, the elector must have acquired these coins after that height.\nIt must be higher than the NU-5 activation height.",
+    },
+    {
+      target: ".end",
+      content: "The end of the coin registration range.\nTo qualify for the election, the elector must have acquired these coins before that height.\nCoins can be moved after that height without affecting the ability to vote.",
+    },
+    {
+      target: ".question",
+      content: "The question that electors are polled on.",
+    },
+    {
+      target: ".choices",
+      content: "The possible answers. Only one answer per vote. But multiple votes can be cast as long as the elector has enough funds.",
+    },
+    {
+      target: ".signature",
+      content: "Check if this election should require the electors to include a signature (proving ownership).\nIf unchecked, electors only need the viewing key.",
+    },
+  ];
 
   const onSubmit: SubmitHandler<z.infer<typeof electionSchema>> = (data) => {
     (async () => {
@@ -98,6 +137,7 @@ function App() {
 
   return (
     <main>
+      <Joyride steps={steps} continuous={true} showSkipButton={true} />
       <Card className="w-3/4 m-auto p-2">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,7 +146,7 @@ function App() {
               control={control}
               name="name"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="name">
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input {...field} />
@@ -120,12 +160,20 @@ function App() {
               control={control}
               name="start"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="start">
                   <FormLabel>Registration Start</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} onChange={(v) => v && field.onChange(v.target.valueAsNumber)} />
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(v) =>
+                        v && field.onChange(v.target.valueAsNumber)
+                      }
+                    />
                   </FormControl>
-                  <FormDescription>Coins must be *younger* than that height to qualify</FormDescription>
+                  <FormDescription>
+                    Coins must be *younger* than that height to qualify
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -135,12 +183,20 @@ function App() {
               control={control}
               name="end"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="end">
                   <FormLabel>Registration End</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} onChange={(v) => v && field.onChange(v.target.valueAsNumber)} />
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(v) =>
+                        v && field.onChange(v.target.valueAsNumber)
+                      }
+                    />
                   </FormControl>
-                  <FormDescription>Coins must be *older* than that height to qualify</FormDescription>
+                  <FormDescription>
+                    Coins must be *older* than that height to qualify
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -150,7 +206,7 @@ function App() {
               control={control}
               name="question"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="question">
                   <FormLabel>Ballot Question</FormLabel>
                   <FormControl>
                     <Input {...field} />
@@ -164,7 +220,7 @@ function App() {
               control={control}
               name="choices"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="choices">
                   <FormLabel>Ballot Choices</FormLabel>
                   <FormControl>
                     <Textarea {...field} rows={10} />
@@ -179,14 +235,19 @@ function App() {
               control={control}
               name="signature_required"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="signature">
                   <div className="flex items-center justify-between">
-                  <FormLabel>Signature Required</FormLabel>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
+                    <FormLabel>Signature Required</FormLabel>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
                   </div>
-                  <FormDescription>If checked, voters must have the secret key</FormDescription>
+                  <FormDescription>
+                    If checked, voters must have the secret key
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -205,12 +266,14 @@ function App() {
             <CardTitle>Election Seed</CardTitle>
             <CardContent>
               <h3 className="mb-5 text-md font-normal text-red-500 dark:text-gray-400 py-2">
-                You MUST save these 24 words in the correct order and spelling. It
-                is impossible to decode the votes without them.
+                You MUST save these 24 words in the correct order and spelling.
+                It is impossible to decode the votes without them.
               </h3>
               <h4 className="text-lg mb-4 border border-red-400 p-1">{seed}</h4>
               <div className="flex justify-center gap-4">
-                <Button onClick={saveElectionFile}>OK, I have saved them</Button>
+                <Button onClick={saveElectionFile}>
+                  OK, I have saved them
+                </Button>
               </div>
             </CardContent>
           </Card>
