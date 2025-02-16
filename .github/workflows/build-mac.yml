@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Prepare Tauri
         run: |
-          npm install
+          pnpm install
           npx tauri icon
       - name: Tauri build
         uses: tauri-apps/tauri-action@v0
