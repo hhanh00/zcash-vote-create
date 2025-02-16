@@ -31,9 +31,12 @@ jobs:
           echo "Certificate imported."
       - name: Check out code
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Prepare Tauri
         run: |
-          npm install
+          pnpm install
           npx tauri icon
       - name: Tauri build
         uses: tauri-apps/tauri-action@v0
