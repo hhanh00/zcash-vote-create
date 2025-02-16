@@ -1,14 +1,13 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import "./App.css";
 import { Channel, invoke } from "@tauri-apps/api/core";
 import { useState } from "react";
 import { save } from "@tauri-apps/plugin-dialog";
 import Swal from "sweetalert2";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "./components/ui/button";
-import { Progress } from "./components/ui/progress";
-import { Textarea } from "./components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -19,9 +18,9 @@ import {
   FormControl,
   FormMessage,
   FormDescription,
-} from "./components/ui/form";
-import { Switch } from "./components/ui/switch";
-import { Dialog, DialogContent } from "./components/ui/dialog";
+} from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Joyride from 'react-joyride';
 
 const NU5 = 1687104;
@@ -136,12 +135,12 @@ function App() {
   };
 
   return (
-    <main>
+    <main className="w-screen flex justify-center items-center">
       <Joyride steps={steps} continuous={true} showSkipButton={true} />
-      <Card className="w-3/4 m-auto p-2">
+      <Card className="w-md p-2">
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <h2 className="text-xl font-extrabold">Create an Election/Vote</h2>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <h2 className="text-xl py-3 font-extrabold">Create an Election/Vote</h2>
             <FormField
               control={control}
               name="name"
