@@ -24,7 +24,8 @@ jobs:
         sudo apt install -y libwebkit2gtk-4.1-dev
         pnpm install
         pnpm tauri icon
-        NO_STRIP=1 pnpm tauri build
+        NO_STRIP=1 pnpm tauri build --no-bundle
+        pnpm tauri bundle --bundles deb
     - name: Upload AppImage artifact
       uses: actions/upload-artifact@v4
       with:
