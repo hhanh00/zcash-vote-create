@@ -1,6 +1,7 @@
 name: Rust CI Windows
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - ci
@@ -14,11 +15,14 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10
     - name: Tauri build
       run: |
-        npm install
-        npx tauri icon
-        npx tauri build --bundles nsis
+        pnpm install
+        pnpm tauri icon
+        pnpm tauri build --bundles nsis
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
