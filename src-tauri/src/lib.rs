@@ -38,7 +38,6 @@ async fn create_election(
     channel: Channel<u32>,
 ) -> Result<String, String> {
     let e = async {
-        println!("{}", serde_json::to_string(&election).unwrap());
         let mnemonic = Mnemonic::generate(bip0039::Count::Words24);
         let phrase = mnemonic.phrase().to_string();
         let seed = mnemonic.to_seed("vote");
@@ -91,14 +90,11 @@ async fn create_election(
                 let _ = ch.send(p);
             })
             .await?;
-        println!("downloaded");
 
         let nf_root = compute_nf_root(&connection)?;
         channel.send(75)?;
-        println!("nf_root {}", hex::encode(&nf_root.0));
         let (cmx_root, frontier) = compute_cmx_root(&connection)?;
         channel.send(100)?;
-        println!("cmx_root {}", hex::encode(&cmx_root.0));
 
         e.nf = nf_root;
         e.cmx = cmx_root;
