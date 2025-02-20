@@ -29,7 +29,7 @@ jobs:
     - name: Upload Debian artifact
       uses: actions/upload-artifact@v4
       with:
-        name: zcash-vote-app.deb
+        name: zcash-vote-create.deb
         path: src-tauri/target/release/bundle/deb/*.deb
     - name: Create Release
       if: startsWith(github.ref_name, 'v')
