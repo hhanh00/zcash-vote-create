@@ -6,7 +6,6 @@ use orchard::keys::{FullViewingKey, Scope, SpendingKey};
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use serde::{Deserialize, Serialize};
-use ff::PrimeField;
 use tauri::ipc::Channel;
 use zcash_vote::{
     address::VoteAddress,
@@ -66,7 +65,6 @@ async fn create_election(
         let end = election.end;
 
         let mut e = Election {
-            id: "".to_string(),
             name: election.name,
             start_height: start,
             end_height: end,
@@ -77,8 +75,6 @@ async fn create_election(
             nf: Default::default(),
             cmx_frontier: Default::default(),
         };
-        let id = hex::encode(&e.domain().to_repr());
-        e.id = id;
 
         let connection = pool.get()?;
         create_schema(&connection)?;
@@ -125,12 +121,17 @@ fn save_election(path: String, election: Election) -> Result<(), String> {
     r().map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn get_election_id(election: Election) -> String {
+    election.id()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![create_election, save_election])
+        .invoke_handler(tauri::generate_handler![create_election, get_election_id, save_election])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
