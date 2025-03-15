@@ -22,6 +22,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Joyride from 'react-joyride';
+import { Spinner } from "./Spinner";
 
 const NU5 = 1687104;
 
@@ -49,6 +50,7 @@ function App() {
   const [seed, setSeed] = useState<string>("");
   const [election, setElection] = useState<any>();
   const [showSeed, setShowSeed] = useState(false);
+  const [creating, setCreating] = useState(false);
 
   const form = useForm<z.infer<typeof electionSchema>>({
     resolver: zodResolver(electionSchema),
@@ -99,6 +101,7 @@ function App() {
       };
 
       try {
+        setCreating(true);
         const election: string = await invoke("create_election", {
           election: data,
           channel: channel,
@@ -113,6 +116,9 @@ function App() {
           icon: "error",
           title: e,
         });
+      }
+      finally {
+        setCreating(false);
       }
     })();
   };
@@ -136,6 +142,12 @@ function App() {
 
   return (
     <main className="w-screen flex justify-center items-center">
+      {creating && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Spinner />
+        </div>
+      )}
+
       <Joyride steps={steps} continuous={true} showSkipButton={true} />
       <Card className="w-md p-2">
         <Form {...form}>
