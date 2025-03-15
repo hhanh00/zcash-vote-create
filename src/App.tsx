@@ -126,8 +126,9 @@ function App() {
   const saveElectionFile = () => {
     (async () => {
       setShowSeed(false);
+      const id = await invoke('get_election_id', { election: election });
       const path = await save({
-        defaultPath: election.id,
+        defaultPath: `${id}.json`,
         title: "Save Election File",
         filters: [
           {

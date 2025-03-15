@@ -28,9 +28,8 @@ rusqlite = "0.29.0"
 r2d2 = "0.8.10"
 r2d2_sqlite = "0.22.0"
 hex = "0.4.3"
-ff = "0.13.0"
 
-zcash-vote = {git = "https://github.com/hhanh00/zcash-vote.git", rev="36ad385"}
+zcash-vote = {git = "https://github.com/hhanh00/zcash-vote.git", rev="8b42736"}
 #zcash-vote = {path = "../../zcash-vote"}
 orchard = "0.3.0"
 
