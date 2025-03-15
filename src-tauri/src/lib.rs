@@ -6,7 +6,7 @@ use orchard::keys::{FullViewingKey, Scope, SpendingKey};
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use serde::{Deserialize, Serialize};
-use slug::slugify;
+use ff::PrimeField;
 use tauri::ipc::Channel;
 use zcash_vote::{
     address::VoteAddress,
@@ -58,7 +58,6 @@ async fn create_election(
                 }
             })
             .collect::<Vec<_>>();
-        let id = slugify(&election.name);
 
         let manager = SqliteConnectionManager::memory();
         let pool = Pool::new(manager)?;
@@ -67,7 +66,7 @@ async fn create_election(
         let end = election.end;
 
         let mut e = Election {
-            id,
+            id: "".to_string(),
             name: election.name,
             start_height: start,
             end_height: end,
@@ -78,10 +77,13 @@ async fn create_election(
             nf: Default::default(),
             cmx_frontier: Default::default(),
         };
+        let id = hex::encode(&e.domain().to_repr());
+        e.id = id;
 
         let connection = pool.get()?;
         create_schema(&connection)?;
 
+        connection.execute("BEGIN TRANSACTION", [])?;
         let lwd_url = std::env::var("LWD_URL").unwrap_or("https://zec.rocks".to_string());
         let ch = channel.clone();
         let (connection, _) =
@@ -95,7 +97,8 @@ async fn create_election(
         channel.send(75)?;
         let (cmx_root, frontier) = compute_cmx_root(&connection)?;
         channel.send(100)?;
-
+        connection.execute("COMMIT", [])?;
+        
         e.nf = nf_root;
         e.cmx = cmx_root;
         e.cmx_frontier = frontier;
